@@ -1,0 +1,39 @@
+{
+    "workbench.colorTheme": "Sweet Dracula",
+    "colorInfo.fields": [
+        "css-color-name",
+        "preview-square",
+        "hex",
+        "rgb"
+    ],
+    "colorInfo.languages": [
+        {
+            "selector": "css",
+            "colors": "css"
+        },
+        {
+            "selector": "sass",
+            "colors": "css"
+        },
+        {
+            "selector": "scss",
+            "colors": "css"
+        },
+        {
+            "selector": "less",
+            "colors": "css"
+        },
+        {
+            "selector": "html",
+            "colors": "css"
+        },
+        {
+            "selector": "javascript",
+            "colors": "css"
+        },
+        {
+            "selector": "python",
+            "colors": "css"
+        }
+    ]
+}
