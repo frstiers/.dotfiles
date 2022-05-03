@@ -1,0 +1,9 @@
+configuration {
+    font: "hack 10";
+    modi: "window,run,drun,ssh";
+    display-drun: "Applications";
+    drun-display-format: "{icon} {name}";
+    show-icons: true;
+    icon-theme: "candy";
+}
+@theme "~/.config/rofi/themes/arc-red-dark.rasi"
