@@ -1,4 +1,4 @@
 #!/bin/sh
 picom --config $HOME/.config/picom/picom.conf &
 conky &
-light-locker &
+feh --no-fehbg --bg-center $HOME/.config/wallpaper.jpg &

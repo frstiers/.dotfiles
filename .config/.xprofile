@@ -1,5 +1,0 @@
-# Set display resolution
-xrandr -s 1920x1080
-
-# Restore previously set wallpaper
-nitrogen --restore

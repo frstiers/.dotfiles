@@ -129,7 +129,7 @@ bottom_widgets = [
         padding=10
     ),
 
-    # widget.PulseVolume(),
+    widget.PulseVolume(),
     # widget.Volume(),
     
     widget.Systray(),
