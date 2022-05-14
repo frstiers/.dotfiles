@@ -10,41 +10,17 @@ from libqtile.lazy import lazy
 # from libqtile.utils import guess_terminal
 
 from settings.mouse import mouse
-from settings.keys import keys, mod
+from settings.keys import keys
 from settings.groups import groups
 from settings.layouts import layouts, floating_layout
 from settings.widgets import widget_defaults, extension_defaults
-from settings.screens import screens
+from settings.screens import fake_screens
+from settings.defaults import mod
 
 @hook.subscribe.startup_once
 def autostart():
     home = os.path.expanduser('~')
     subprocess.run([home + '/.config/qtile/autostart.sh'])
-
-
-for i in groups:
-    keys.extend(
-        [
-            # mod1 + letter of group = switch to group
-            Key(
-                [mod],
-                i.name,
-                lazy.group[i.name].toscreen(),
-                desc="Switch to group {}".format(i.name),
-            ),
-            # mod1 + shift + letter of group = switch to & move focused window to group
-            Key(
-                [mod, "shift"],
-                i.name,
-                lazy.window.togroup(i.name, switch_group=True),
-                desc="Switch to & move focused window to group {}".format(i.name),
-            ),
-            # Or, use below if you prefer not to switch to that group.
-            # # mod1 + shift + letter of group = move focused window to group
-            # Key([mod, "shift"], i.name, lazy.window.togroup(i.name),
-            #     desc="move focused window to group {}".format(i.name)),
-        ]
-    )
 
 main = None
 dgroups_key_binder = None

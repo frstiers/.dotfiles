@@ -1,5 +1,15 @@
 from libqtile import widget, bar, qtile
+
 from .theme import colors
+from .defaults import terminal
+
+import os
+
+home = '{HOME}'.format(**os.environ)
+
+#################################
+##### Defining Base Widgets #####
+#################################
 
 def base(fg='text', bg='dark'):
     return {
@@ -7,9 +17,8 @@ def base(fg='text', bg='dark'):
         'background': colors[bg]
     }
 
-top_widgets = [
-    
-    widget.GroupBox(
+def myGroupBox(visibleGroups=[]):
+    return widget.GroupBox(
         **base(fg='light'),
         font='Code New Roman',
         fontsize=20,
@@ -28,111 +37,113 @@ top_widgets = [
         this_screen_border=colors['grey'],
         other_current_screen_border=colors['dark'],
         other_screen_border=colors['dark'],
-        disable_drag=True
-    ),
-    widget.Spacer(
+        disable_drag=True,
+        visible_groups= visibleGroups
+    )
+
+def mySpacer():
+    return widget.Spacer(
         length=bar.STRETCH
-    ),
-    widget.TextBox(
-        "",
-        fontsize="24"
-    ),
-    
-    widget.Spacer(
-        length=bar.STRETCH
-    ),
+    )
 
-    # widget.CPUGraph(),
-
-    widget.CheckUpdates(
-        distro='Arch_paru',
-        no_update_string='Updates: None',
-        execute='alacritty --hold -e sudo paru'
-        # mouse_callbacks = 
-        #     'Button1': lambda: qtile.cmd_spawn(terminal + ' -e sudo paru')
-        # }
-    ),
-
-    widget.Sep(
+def mySeparator():
+    return widget.Sep(
         background=colors['dark'],
         foreground=colors['grey'],
         linewidth=3,
         padding=10
-    ),
+    )
 
-    # widget.QuickExit(),
-    widget.TextBox(
-        "  ",
-        fontsize=24,
-        mouse_callbacks={
-            "Button1": lambda: qtile.cmd_spawn("/home/frstiers/.config/rofi/powermenu/powermenu.sh")
-            # "Button1": lambda: qtile.cmd_spawn("rofi -show power-menu -modi 'power-menu:/home/frstiers/.config/rofi/scripts/rofi-power-menu' ")
+def myCenterIcon(icon):
+    return widget.TextBox(
+        icon,
+        fontsize = "24"
+    )
+
+def myCheckUpdates():
+    return widget.CheckUpdates(
+        distro='Arch_paru',
+        no_update_string='0 ',
+        display_format='{updates} ',
+        mouse_callbacks = {
+            'Button1': lambda: qtile.cmd_spawn(terminal)
         }
     )
-]
 
-# def remove_window_name(text):
-#     return ""
+def myQuickExit():
+    return widget.TextBox(
+        "襤",
+        fontsize=24,
+        mouse_callbacks={
+            "Button1": lambda: qtile.cmd_spawn(home + "/.config/rofi/powermenu/powermenu.sh")
+        }
+    )
 
-bottom_widgets = [
-
-    # widget.CurrentLayout(),
-    widget.CurrentLayoutIcon(
+def myCurrentLayoutIcons():
+    return widget.CurrentLayoutIcon(
         scale=0.75
-    ),
+    )
 
-    widget.Spacer(
-        length=bar.STRETCH
-    ),
-
-    # widget.TaskList(
-    #     highlight_method='block',
-    #     title_width_method=None,
-    #     max_title_width=None,
-    #     padding=6,
-    #     border=colors['color1'],
-    #     # parse_text=remove_window_name
-    # ),
-    
-    widget.Spacer(
-        length=bar.STRETCH
-    ),
-
-    widget.Sep(
-        background=colors['dark'],
-        foreground=colors['grey'],
-        linewidth=3,
-        padding=10
-    ),
-    
-    widget.OpenWeather(
+def myOpenWeather():
+    return widget.OpenWeather(
         cityid="4160021",
         metric=False,
         format='{main_temp}° {units_temperature}'
-    ),
-    
-    widget.Sep(
-        background=colors['dark'],
-        foreground=colors['grey'],
-        linewidth=3,
-        padding=10
-    ),
-    
-    widget.Clock(
+    )
+
+def myClock():
+    return widget.Clock(
         format="%A, %B %d, %Y %H:%M"
-    ),
+    )
 
-    widget.Sep(
-        background=colors['dark'],
-        foreground=colors['grey'],
-        linewidth=3,
+def myVolumeControl():
+    return widget.PulseVolume()
+
+def mySystemTray():
+    return widget.Systray(
         padding=10
-    ),
+    )
 
-    widget.PulseVolume(),
-    # widget.Volume(),
+
+#################################
+##### Creating Widget Lists #####
+#################################
+
+topPrimaryWidgets = [
+    myGroupBox(visibleGroups=['1', '2', '3', '4']),
+    mySpacer(),
+    myCenterIcon(icon=""),
+    mySpacer(),
+]
+
+topSecondaryWidgets = [
+    myGroupBox(visibleGroups=['5', '6', '7', '8', '9']),
+    mySpacer(),
+    myCenterIcon(icon=""),
+    mySpacer(),
+    mySystemTray(),
+    mySeparator(),
+    myCheckUpdates(),
+    mySeparator(),
+    myQuickExit(),
+]
+
+bottomPrimaryWidgets = [
+    myCurrentLayoutIcons(),
     
-    widget.Systray(),
+    mySpacer(),
+]
+
+bottomSecondaryWidgets = [
+    myCurrentLayoutIcons(),
+    mySpacer(),
+
+    mySeparator(),
+    myVolumeControl(),
+    mySeparator(),
+    myOpenWeather(),
+    mySeparator(),
+    myClock(),
 ]
 
 widget_defaults = {

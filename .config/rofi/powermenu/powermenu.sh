@@ -24,11 +24,11 @@ uptime=$(uptime -p | sed -e 's/up //g')
 rofi_command="rofi -theme $dir/$theme"
 
 # Options
-shutdown=""
-reboot=""
-lock=""
-suspend=""
-logout=""
+shutdown="襤"
+reboot="ﰇ"
+lock=""
+suspend="鈴"
+logout=""
 
 # Message
 msg() {
@@ -47,11 +47,12 @@ case $chosen in
 			systemctl reboot
         ;;
     $lock)
-		if [[ -f /usr/bin/i3lock ]]; then
-			i3lock
-		elif [[ -f /usr/bin/betterlockscreen ]]; then
 			betterlockscreen -l
-		fi
+		# if [[ -f /usr/bin/i3lock ]]; then
+		# 	i3lock
+		# elif [[ -f /usr/bin/betterlockscreen ]]; then
+		# 	betterlockscreen -l
+		# fi
         ;;
     $suspend)
 			mpc -q pause

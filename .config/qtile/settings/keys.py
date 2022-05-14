@@ -1,15 +1,13 @@
-from libqtile.config import Key
+from libqtile.config import Key, Match
 from libqtile.lazy import lazy
+from libqtile.log_utils import logger
 
 from .groups import groups
+from .defaults import *
 
-# Variables
-mod = "mod4"
-terminal = "alacritty"
-runLauncher = "rofi -show drun"
-# altTab = "rofi -show window"
-
-# Functions
+###############################
+########## Functions ##########
+###############################
 
 def go_to_app_or_group(group, app):
     def temp_function(qtile):
@@ -20,11 +18,68 @@ def go_to_app_or_group(group, app):
             qtile.cmd_spawn(app)
     return temp_function
 
+def launchDefaultApp(qtile):
+    # Defines the default app based on the current group
+    if qtile.current_group.name == "1":
+        defaultApp = terminal
+    elif qtile.current_group.name == "2":
+        defaultApp = webBrowser
+    elif qtile.current_group.name == "3":
+        defaultApp = codeEditor
+    elif qtile.current_group.name == "4":
+        defaultApp = "steam"
+    elif qtile.current_group.name == "6":
+        defaultApp = webBrowser
+    elif qtile.current_group.name == "7":
+        defaultApp = "discord"
+    elif qtile.current_group.name == "8":
+        defaultApp = "obsidian"
+    else:
+        defaultApp = terminal
+    
+    # Creates a list of windows in the current group
+    currentWindows = [ w for w in qtile.windows_map.values() if w.group == qtile.current_group ]
+    appExists = False
+
+    # Check if the default app already exists in the group or not; if it does focus it, else spawn it
+    for currentWindow in currentWindows:
+        if defaultApp.lower() in currentWindow.name.lower():
+            appExists = True
+            appWindow = currentWindow
+            break
+
+    if appExists:
+        qtile.current_screen.set_group(currentWindow.group)
+        currentWindow.group.focus(currentWindow, False)
+    else:
+        qtile.cmd_spawn(defaultApp)
+
+def cycleOpenApps(qtile):
+    ''' 
+    TODO: build out a function that cycles through a list of open windows and 
+    changes focus to that group and screen
+    '''
 
 keys = [
     # A list of available commands that can be bound to keys can be found
     # at https://docs.qtile.org/en/latest/manual/config/lazy.html
     
+    #########################################
+    ########## General Keybindings ##########
+    #########################################
+
+    Key(
+        [mod], "l", 
+        lazy.spawn(lockscreen),
+        desc="Lock the screen."
+    ),
+
+    Key(
+        [mod, "shift"], "period", 
+        lazy.next_screen(),
+        desc=""
+    ),
+
     ############################################
     ########## Launching Applications ##########
     ############################################
@@ -35,25 +90,36 @@ keys = [
         desc="Launch Terminal"
     ),
     Key(
+        ["control"], "space",
+        lazy.function(launchDefaultApp),
+        desc="Launch current group's default application"
+    ),
+    Key(
         [mod], "space", 
         lazy.spawn(runLauncher), 
         desc="Launch run launcher"
     ),
     Key(
         [mod], "d",
-        lazy.function(go_to_app_or_group("3", "discord")),
+        lazy.function(go_to_app_or_group("7", "discord")),
         desc="Launch or go to discord"
     ),
     Key(
         [mod], "c",
-        lazy.function(go_to_app_or_group("6", "vscodium")),
+        lazy.function(go_to_app_or_group("3", "vscodium")),
         desc="Launch or go to code editor"
     ),
     Key(
-        [mod], "i",
-        lazy.function(go_to_app_or_group("2", "chromium")),
-        desc="Launch or go to internet browser"
+        [mod, "shift"], "s",
+        lazy.spawn(screenshot),
+        desc="Launches screenshot tool"
     ),
+
+    # Key(
+    #     [mod], "i",
+    #     lazy.function(go_to_app_or_group("2", "chromium")),
+    #     desc="Launch or go to internet browser"
+    # ),
 
     ############################################
     ################ Navigation ################
@@ -110,11 +176,11 @@ keys = [
     
     # Navigate between groups
     Key(
-        ["mod1"], "Right",
+        [mod, "shift"], "Right",
         lazy.screen.next_group()
     ),
     Key(
-        ["mod1"], "Left",
+        [mod, "shift"], "Left",
         lazy.screen.prev_group()
     ),
 
@@ -151,6 +217,28 @@ keys = [
         lazy.shutdown(), 
         desc="Shutdown Qtile"
     ),
-    
-    
 ]
+
+for i in groups:
+    keys.extend(
+        [
+            # mod1 + letter of group = switch to group
+            Key(
+                [mod],
+                i.name,
+                lazy.group[i.name].toscreen(),
+                desc="Switch to group {}".format(i.name),
+            ),
+            # mod1 + shift + letter of group = switch to & move focused window to group
+            Key(
+                [mod, "shift"],
+                i.name,
+                lazy.window.togroup(i.name, switch_group=True),
+                desc="Switch to & move focused window to group {}".format(i.name),
+            ),
+            # Or, use below if you prefer not to switch to that group.
+            # # mod1 + shift + letter of group = move focused window to group
+            # Key([mod, "shift"], i.name, lazy.window.togroup(i.name),
+            #     desc="move focused window to group {}".format(i.name)),
+        ]
+    )
