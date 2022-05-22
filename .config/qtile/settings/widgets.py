@@ -81,7 +81,7 @@ def myQuickExit():
 
 def myCurrentLayoutIcons():
     return widget.CurrentLayoutIcon(
-        scale=0.75
+        scale=0.5
     )
 
 def myOpenWeather():
@@ -97,29 +97,34 @@ def myClock():
     )
 
 def myVolumeControl():
-    return widget.PulseVolume()
+    return widget.PulseVolume(
+        # emoji=True,
+        # fmt="{}",
+        step=5
+    )
 
 def mySystemTray():
     return widget.Systray(
         padding=10
     )
 
+def myNetGraph():
+    return widget.myNetGraph()
 
 #################################
 ##### Creating Widget Lists #####
 #################################
 
 topPrimaryWidgets = [
-    myGroupBox(visibleGroups=['1', '2', '3', '4']),
+    
     mySpacer(),
-    myCenterIcon(icon=""),
+    myGroupBox(visibleGroups=['1', '2', '3', '4']),
     mySpacer(),
 ]
 
 topSecondaryWidgets = [
-    myGroupBox(visibleGroups=['5', '6', '7', '8', '9']),
     mySpacer(),
-    myCenterIcon(icon=""),
+    myGroupBox(visibleGroups=['5', '6', '7', '8', '9']),
     mySpacer(),
     mySystemTray(),
     mySeparator(),
@@ -130,14 +135,15 @@ topSecondaryWidgets = [
 
 bottomPrimaryWidgets = [
     myCurrentLayoutIcons(),
-    
     mySpacer(),
+    # myNetGraph(), requires psutil
+    mySeparator(),
+    myClock(),
 ]
 
 bottomSecondaryWidgets = [
     myCurrentLayoutIcons(),
     mySpacer(),
-
     mySeparator(),
     myVolumeControl(),
     mySeparator(),
